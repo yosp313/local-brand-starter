@@ -27,7 +27,7 @@ cd backend
 
 2. Install dependencies:
 ```bash
-go mod download
+go mod tidy
 ```
 
 3. Create a PostgreSQL database:
