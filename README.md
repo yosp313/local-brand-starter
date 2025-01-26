@@ -14,7 +14,7 @@ This is the backend service for the AI Content Creation SaaS tool, built with Go
 ## Prerequisites
 
 - Go 1.21 or later
-- PostgreSQL 14 or later
+- sqlite
 - Cloudflare account with AI Workers access
 
 ## Setup
