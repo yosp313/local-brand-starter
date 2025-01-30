@@ -77,7 +77,7 @@ func main() {
 		protected.Use(services.AuthMiddleware())
 		{
 			// Content generation endpoints
-		  protected.POST("/generate", h.GenerateContent)
+			protected.POST("/generate", h.GenerateContent)
 			protected.GET("/content", h.GetContent)
 			protected.GET("/content/:id", h.GetContentByID)
 
@@ -91,9 +91,8 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	
+
 	if err := r.Run(":" + port); err != nil {
 		log.Fatal("Failed to start server:", err)
 	}
 }
-

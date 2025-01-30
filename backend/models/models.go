@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -10,9 +11,9 @@ import (
 type SubscriptionTier string
 
 const (
-	FreeTier        SubscriptionTier = "free"
-	ProTier         SubscriptionTier = "pro"
-	EnterpriseTier  SubscriptionTier = "enterprise"
+	FreeTier       SubscriptionTier = "free"
+	ProTier        SubscriptionTier = "pro"
+	EnterpriseTier SubscriptionTier = "enterprise"
 )
 
 // SubscriptionPlan represents the available plans and their features
@@ -22,8 +23,8 @@ type SubscriptionPlan struct {
 	Tier            SubscriptionTier `gorm:"type:string;uniqueIndex" json:"tier"`
 	Name            string           `json:"name"`
 	Price           float64          `json:"price"`
-	TokensPerMonth  int             `json:"tokens_per_month"`
-	ModelsAvailable string          `json:"models_available"` // JSON string array
+	TokensPerMonth  int              `json:"tokens_per_month"`
+	ModelsAvailable string           `json:"models_available"` // JSON string array
 }
 
 // SetModelsAvailable converts string slice to JSON string for storage
@@ -47,13 +48,13 @@ func (sp *SubscriptionPlan) GetModelsAvailable() ([]string, error) {
 
 type User struct {
 	gorm.Model
-	UserID            string           `gorm:"type:string;uniqueIndex" json:"user_id"`
-	Name              string           `json:"name"`
-	Email             string           `gorm:"uniqueIndex" json:"email"`
-	Password          string           `json:"-"` // "-" means this field won't be included in JSON
-	SubscriptionTier  SubscriptionTier `gorm:"type:string;default:'free'" json:"subscription_tier"`
-	StripeCustomerID  string           `json:"stripe_customer_id,omitempty"`
-	RemainingCredits  int              `gorm:"default:1000" json:"remaining_credits"`
+	UserID           string           `gorm:"type:string;uniqueIndex" json:"user_id"`
+	Name             string           `json:"name"`
+	Email            string           `gorm:"uniqueIndex" json:"email"`
+	Password         string           `json:"-"` // "-" means this field won't be included in JSON
+	SubscriptionTier SubscriptionTier `gorm:"type:string;default:'free'" json:"subscription_tier"`
+	StripeCustomerID string           `json:"stripe_customer_id,omitempty"`
+	RemainingCredits int              `gorm:"default:1000" json:"remaining_credits"`
 }
 
 type ContentRequest struct {

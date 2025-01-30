@@ -10,10 +10,10 @@ export default function Home() {
       price: 0,
       description: "For small businesses that are just getting started.",
       features: [
-        {name: "Unlimited products", included: true},
-        {name: "Unlimited orders", included: false},
-        {name: "24/7 support", included: false},
-        {name: "Custom domain", included: false},
+        { name: "Unlimited products", included: true },
+        { name: "Unlimited orders", included: false },
+        { name: "24/7 support", included: false },
+        { name: "Custom domain", included: false },
       ],
     },
     {
@@ -21,10 +21,10 @@ export default function Home() {
       price: 29,
       description: "For businesses that are looking to grow.",
       features: [
-        {name: "Unlimited products", included: true},
-        {name: "Unlimited orders", included: true},
-        {name: "24/7 support", included: true},
-        {name: "Custom domain", included: false},
+        { name: "Unlimited products", included: true },
+        { name: "Unlimited orders", included: true },
+        { name: "24/7 support", included: true },
+        { name: "Custom domain", included: false },
       ],
     },
     {
@@ -32,14 +32,13 @@ export default function Home() {
       price: 49,
       description: "For businesses that are looking to scale.",
       features: [
-        {name: "Unlimited products", included: true},
-        {name: "Unlimited orders", included: true},
-        {name: "24/7 support", included: true},
-        {name: "Custom domain", included: true},
-      ]
-    }
+        { name: "Unlimited products", included: true },
+        { name: "Unlimited orders", included: true },
+        { name: "24/7 support", included: true },
+        { name: "Custom domain", included: true },
+      ],
+    },
   ];
-
 
   return (
     <>
@@ -48,13 +47,10 @@ export default function Home() {
         title1="Grow Your"
         title2="Brand With Us"
       />
-      <Feature/>
+      <Feature />
       <h1 className="text-4xl font-bold text-center mt-12">Pricing</h1>
-      <PricingCards
-        tiers={tiers}
-        className="gap-6"
-      />
-      <Footerdemo/>
+      <PricingCards tiers={tiers} className="gap-6" />
+      <Footerdemo />
     </>
   );
 }
