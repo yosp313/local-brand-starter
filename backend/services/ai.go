@@ -43,7 +43,7 @@ type CloudflareAIResponse struct {
 
 type ImageResponse struct {
 	Result struct {
-		Image string `json:"image"`
+		Image []byte `json:"image"`
 	}
 	Success bool `json:"success"`
 	Errors  []struct {
@@ -131,7 +131,7 @@ func (ai *AIService) GenerateImage(c *gin.Context, contentReq *models.ContentReq
 	modelEndpoint := "@cf/black-forest-labs/flux-1-schnell"
 
 	imageReq := ImageRequest{
-		Prompt: contentReq.Prompt,
+		Prompt: "You are a senior in digital marketing and your task is to Generate a professional digital illustration of the following prompt: " + contentReq.Prompt,
 	}
 
 	reqBody, err := json.Marshal(imageReq)
@@ -168,10 +168,14 @@ func (ai *AIService) GenerateImage(c *gin.Context, contentReq *models.ContentReq
 	}
 
 	if !imageResponse.Success && len(imageResponse.Errors) > 0 {
-		return "", fmt.Errorf("API error: %s", imageResponse.Errors[0].Message)
+		return "", fmt.Errorf("Image API error: %s", imageResponse.Errors[0].Message)
 	}
 
-	imageURL := "data:image/jpeg;base64," + imageResponse.Result.Image
+	if err := UploadImageToS3(imageResponse.Result.Image, contentReq); err != nil {
+		return "", fmt.Errorf("failed to upload image to S3: %v", err)
+	}
+
+	imageURL := GetImageURL(contentReq.RequestID)
 
 	return imageURL, nil
 }

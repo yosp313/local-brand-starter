@@ -52,6 +52,9 @@ func (s *ContentService) Generate(c *gin.Context, userID string, model string, p
 	}
 
 	imageResponse, err := s.aiService.GenerateImage(c, &contentReq)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate image: %v", err)
+	}
 
 	// Create generated content
 	generatedContent := &models.GeneratedContent{
@@ -69,6 +72,10 @@ func (s *ContentService) Generate(c *gin.Context, userID string, model string, p
 	// Deduct credits
 	if err := s.db.Model(&user).Update("remaining_credits", user.RemainingCredits-10).Error; err != nil {
 		return nil, fmt.Errorf("failed to update credits: %v", err)
+	}
+
+	if err := s.db.Model(&contentReq).Update("status", "completed").Error; err != nil {
+		return nil, fmt.Errorf("failed to update content request status: %v", err)
 	}
 
 	return generatedContent, nil
