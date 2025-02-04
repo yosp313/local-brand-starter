@@ -73,7 +73,7 @@ func (ai *AIService) GenerateContent(c *gin.Context, contentReq *models.ContentR
 		Messages: []Message{
 			{Role: "system", Content: `
           You are a marketing and sales professional who is looking to increase your sales and the best in the industry for 
-        growing local brands.`},
+        growing local brands and make sure to be concise and provide the caption and only the caption that is based on the user's prompt.`},
 			{Role: "user", Content: contentReq.Prompt},
 		},
 		Stream: false,
