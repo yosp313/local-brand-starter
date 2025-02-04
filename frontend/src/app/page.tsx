@@ -48,7 +48,7 @@ export default function Home() {
         title2="Brand With Us"
       />
       <Feature />
-      <h1 className="text-4xl font-bold text-center mt-12">Pricing</h1>
+      <h1 className="text-4xl font-bold text-center">Pricing</h1>
       <PricingCards tiers={tiers} className="gap-6" />
       <Footerdemo />
     </>
