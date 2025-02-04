@@ -71,6 +71,7 @@ type GeneratedContent struct {
 	ContentID string `gorm:"type:string;uniqueIndex" json:"content_id"`
 	RequestID string `gorm:"type:string" json:"request_id"`
 	Output    string `json:"output"`
+	ImageURL  string `json:"image_url"`
 	Version   int    `gorm:"default:1" json:"version"`
 	CacheKey  string `json:"cache_key"`
 }

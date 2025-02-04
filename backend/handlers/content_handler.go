@@ -15,6 +15,7 @@ type ContentResponse struct {
 	ContentID string `json:"content_id"`
 	RequestID string `json:"request_id"`
 	Output    string `json:"output"`
+	ImageURL  string `json:"image_url"`
 	Version   int    `json:"version"`
 }
 
@@ -41,6 +42,7 @@ func (h *Handler) GenerateContent(c *gin.Context) {
 		ContentID: content.ContentID,
 		RequestID: content.RequestID,
 		Output:    content.Output,
+		ImageURL:  content.ImageURL,
 		Version:   content.Version,
 	})
 }
@@ -91,4 +93,4 @@ func (h *Handler) GetContentByID(c *gin.Context) {
 		Output:    content.Output,
 		Version:   content.Version,
 	})
-} 
+}

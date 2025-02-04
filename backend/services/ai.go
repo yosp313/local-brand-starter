@@ -19,7 +19,11 @@ type AIService struct {
 
 type CloudflareAIRequest struct {
 	Messages []Message `json:"messages"`
-	Stream   bool     `json:"stream"`
+	Stream   bool      `json:"stream"`
+}
+
+type ImageRequest struct {
+	Prompt string `json:"prompt"`
 }
 
 type Message struct {
@@ -31,10 +35,20 @@ type CloudflareAIResponse struct {
 	Result struct {
 		Response string `json:"response"`
 	} `json:"result"`
-	Success bool   `json:"success"`
+	Success bool `json:"success"`
 	Errors  []struct {
 		Message string `json:"message"`
 	} `json:"errors"`
+}
+
+type ImageResponse struct {
+	Result struct {
+		Image string `json:"image"`
+	}
+	Success bool `json:"success"`
+	Errors  []struct {
+		Message string `json:"message"`
+	}
 }
 
 func NewAIService() *AIService {
@@ -57,17 +71,17 @@ func (ai *AIService) GenerateContent(c *gin.Context, contentReq *models.ContentR
 
 	aiReq := CloudflareAIRequest{
 		Messages: []Message{
-			{Role: "system", Content:`
+			{Role: "system", Content: `
           You are a marketing and sales professional who is looking to increase your sales and the best in the industry for 
         growing local brands.`},
-      {Role: "user", Content: contentReq.Prompt},
+			{Role: "user", Content: contentReq.Prompt},
 		},
 		Stream: false,
 	}
 
 	reqBody, err := json.Marshal(aiReq)
 	if err != nil {
-		return "", fmt.Errorf("failed to marshal request: %v", err)
+		return "", fmt.Errorf("Failed to marshal the request into json: %s", err)
 	}
 
 	url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/run/%s",
@@ -111,4 +125,53 @@ func (ai *AIService) GenerateContent(c *gin.Context, contentReq *models.ContentR
 	}
 
 	return cloudflareResponse.Result.Response, nil
+}
+
+func (ai *AIService) GenerateImage(c *gin.Context, contentReq *models.ContentRequest) (string, error) {
+	modelEndpoint := "@cf/black-forest-labs/flux-1-schnell"
+
+	imageReq := ImageRequest{
+		Prompt: contentReq.Prompt,
+	}
+
+	reqBody, err := json.Marshal(imageReq)
+	if err != nil {
+		return "", fmt.Errorf("Failed to marshal the request into json: %s", err)
+	}
+
+	url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/run/%s",
+		ai.cloudflareAccountID, modelEndpoint)
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return "", fmt.Errorf("failed to create request: %v", err)
+	}
+
+	req.Header.Set("Authorization", "Bearer "+ai.cloudflareAPIToken)
+
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("failed to send request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to read response body: %v", err)
+	}
+
+	var imageResponse ImageResponse
+	if err := json.Unmarshal(respBody, &imageResponse); err != nil {
+		return "", fmt.Errorf("failed to parse response JSON: %v", err)
+	}
+
+	if !imageResponse.Success && len(imageResponse.Errors) > 0 {
+		return "", fmt.Errorf("API error: %s", imageResponse.Errors[0].Message)
+	}
+
+	imageURL := "data:image/jpeg;base64," + imageResponse.Result.Image
+
+	return imageURL, nil
 }

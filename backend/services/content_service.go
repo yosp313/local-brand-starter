@@ -51,11 +51,14 @@ func (s *ContentService) Generate(c *gin.Context, userID string, model string, p
 		return nil, fmt.Errorf("failed to generate content: %v", err)
 	}
 
+	imageResponse, err := s.aiService.GenerateImage(c, &contentReq)
+
 	// Create generated content
 	generatedContent := &models.GeneratedContent{
 		ContentID: uuid.New().String(),
 		RequestID: contentReq.RequestID,
 		Output:    response,
+		ImageURL:  imageResponse,
 		Version:   1,
 	}
 
